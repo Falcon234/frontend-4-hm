@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3000/students'; // json-server
+const API_URL = 'http://localhost:3000/students';
 
 const getBtn = document.getElementById('get-students-btn');
 const tableBody = document.querySelector('#students-table tbody');
