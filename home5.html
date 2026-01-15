@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Гра та графік</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/5.2.0/PNotify.min.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/5.2.0/PNotify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/5.2.0/PNotifyButtons.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #game { margin-bottom: 50px; }
+    #key { font-size: 40px; font-weight: bold; margin: 20px 0; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Гра "Натисни правильну клавішу"</h1>
+  <div id="game">
+    <p>Натисни клавішу:</p>
+    <div id="key"></div>
+    <button id="new-game">Нова гра</button>
+  </div>
+  <h1>Статистика продажів за останній місяць</h1>
+  <canvas id="sales-chart" width="600" height="300"></canvas>
+  <script>
+    const keys = ["a","s","d","f","g","h","j","k","l",";"];
+    let currentKeyIndex = 0;
+
+    const keyDisplay = document.getElementById("key");
+    const newGameButton = document.getElementById("new-game");
+
+    function setCurrentKey() {
+      keyDisplay.textContent = keys[currentKeyIndex];
+    }
+    setCurrentKey();
+    document.addEventListener("keydown", (event) => {
+      event.preventDefault(); 
+
+      const pressedKey = event.key.toLowerCase();
+
+      if (pressedKey === keys[currentKeyIndex]) {
+        currentKeyIndex++;
+        if (currentKeyIndex >= keys.length) {
+          PNotify.success({ text: "Вітаємо! Ви пройшли гру!" });
+          currentKeyIndex = 0;
+        }
+        setCurrentKey();
+      } else {
+        PNotify.error({ text: `Неправильна клавіша! Ви натиснули "${pressedKey}"` });
+      }
+    });
+    document.addEventListener("keypress", (event) => {
+      event.preventDefault();
+    });
+    newGameButton.addEventListener("click", () => {
+      currentKeyIndex = 0;
+      setCurrentKey();
+      PNotify.info({ text: "Нова гра почалася!" });
+    });
+    const chartData = {
+      labels: ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"],
+      datasets: [
+        {
+          label: "Продажі за останній місяць",
+          data: [150,220,180,200,250,300,280,350,400,380,420,450,500,550,600,650,700,750,800,850,900,950,1000,1050,1100,1150,1200,1250,1300,1350],
+          backgroundColor: "rgba(33,150,243,0.2)",
+          borderColor: "#2196f3",
+          borderWidth: 2,
+          fill: true,
+          tension: 0.2 
+        }
+      ]
+    };
+
+    const ctx = document.getElementById("sales-chart").getContext("2d");
+
+    const salesChart = new Chart(ctx, {
+      type: 'line',
+      data: chartData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          title: {
+            display: true,
+            text: 'Продажі за останній місяць'
+          }
+        },
+        scales: {
+          x: { title: { display: true, text: 'День місяця' } },
+          y: { title: { display: true, text: 'Продажі' }, beginAtZero: true }
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
